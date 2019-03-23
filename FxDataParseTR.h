@@ -7,13 +7,17 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+
 #include "stdio.h"
 #include "string.h"
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
 class FxDataParseTR
 {
 
 public:
+		
+
 		typedef void (*FUN)(uint8_t ch);
 		uint8_t *RxBuf;
 		uint8_t *data;
@@ -22,8 +26,8 @@ public:
 		uint16_t RxBufSize;
 		uint8_t *flag;
 		uint8_t flaglen;
-    FxDataParseTR();//
-    FxDataParseTR(uint16_t Bufsize);//
+		FxDataParseTR();//
+		FxDataParseTR(uint16_t Bufsize);//
 		FxDataParseTR(uint16_t Bufsize,uint8_t flag1,uint8_t flag2);//
 		void reflag(uint8_t flag1,uint8_t flag2);
 		uint8_t read(uint8_t ch);
@@ -36,7 +40,6 @@ public:
 private:
 	uint8_t flagsta;
 	uint8_t check;
-	void writenull(uint8_t ch);
 	
 		
 };

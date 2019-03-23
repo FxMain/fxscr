@@ -6,6 +6,7 @@
 FxDataParseTR::FxDataParseTR()
 {
 	RxBuf = new uint8_t[200]();
+	data = new uint8_t[200]();
 	RxBufCount = 0;
 	RxBufSize = 200;
 	flag = new uint8_t[2]();
@@ -20,6 +21,7 @@ FxDataParseTR::FxDataParseTR()
 FxDataParseTR::FxDataParseTR(uint16_t Bufsize)
 {
 		RxBuf = new uint8_t[Bufsize]();
+		data = new uint8_t[Bufsize]();
 		RxBufSize = Bufsize;
 		RxBufCount = 0;
 		flag = new uint8_t[2]();
@@ -33,6 +35,7 @@ FxDataParseTR::FxDataParseTR(uint16_t Bufsize)
 FxDataParseTR::FxDataParseTR(uint16_t Bufsize,uint8_t flag1,uint8_t flag2)
 {
 		RxBuf = new uint8_t[Bufsize]();
+		data = new uint8_t[Bufsize]();
 		RxBufSize = Bufsize;
 		RxBufCount = 0;
 		flag = new uint8_t[2]();
@@ -47,6 +50,7 @@ FxDataParseTR::FxDataParseTR(uint16_t Bufsize,uint8_t flag1,uint8_t flag2,FUN fu
 {
 		RxBuf = new uint8_t[Bufsize]();
 		RxBufSize = Bufsize;
+		data = new uint8_t[Bufsize];
 		RxBufCount = 0;
 		flag = new uint8_t[2]();
 		flag[0]=flag1;
@@ -74,10 +78,12 @@ uint8_t FxDataParseTR::read(uint8_t ch)
 	}else if(flagsta==1){
 		if(RxBufCount==1 && ch==flag[1]){
 			flagsta=2;
-			RxBufCount = 0;
+			
 			RxBuf[RxBufCount++]=ch;
 		}else{
 			flagsta=0;
+			memset(RxBuf,0,sizeof(RxBufCount));
+			RxBufCount = 0;
 		}
 	}else if(flagsta==2){
 		RxBuf[RxBufCount++]=ch;
@@ -89,16 +95,22 @@ uint8_t FxDataParseTR::read(uint8_t ch)
 		
 	}else if(flagsta==3){
 		
+		RxBuf[RxBufCount++] = ch;
 		
-		if(RxBufCount>=size+4){
+		if(RxBufCount>size+4){
+			
 			if(check==ch){
-				data = new uint8_t[size];
-				memcpy(data,&RxBuf[4],size);
+				
+				memcpy(data,RxBuf+4,size);
+				//RxBuf[RxBufCount++] = ch;
+				flagsta = 0;
+				memset(RxBuf, 0, sizeof(RxBufCount));
+				RxBufCount = 0;
 				return 0;
 			}
+			
 		}
-		RxBuf[RxBufCount++]=ch;
-		check+=ch;
+		check += ch;
 		
 	}
 	return 1;
